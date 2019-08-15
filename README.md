@@ -41,7 +41,7 @@ It is currently reachable only from within SciLifeLab Stockholm.
 ### Installation ###
 
 The development server is installed as an ordinary Python package on the ngi-internal-dev server under the `ngi.web` user using the `userman_env` conda environment. The controlling configuration
-file `userman-dev.yaml` is located in `/home/ngi.web/conf` .
+file `userman-dev.yaml` is located in `/home/ngi.web/conf`. It is currently running on Python 2.7.
 
 The development server is upgraded thus:
 
