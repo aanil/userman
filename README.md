@@ -40,23 +40,17 @@ It is currently reachable only from within SciLifeLab Stockholm.
 
 ### Installation ###
 
-The development server is installed as an ordinary Python package in
-`/usr/lib/python2.6/site-packages/userman` . The controlling configuration
-file `tools-dev.yaml` (which is not part of the GitHub stuff) is located there.
-I have set the owner of that directory to `per.kraulis` to make it
-simpler for me... 
+The development server is installed as an ordinary Python package on the ngi-internal-dev server under the `ngi.web` user using the `userman_env` conda environment. The controlling configuration
+file `userman-dev.yaml` is located in `/home/ngi.web/conf`. It is currently running on Python 2.7.
 
 The development server is upgraded thus:
 
-    $ pip install --upgrade --no-deps git+https://github.com/pekrau/userman
-
-The Tornado service is started by the `/etc/rc.local` script.
+    $ pip install --upgrade --no-deps git+https://github.com/NationalGenomicsInfrastructure/userman
 
 The Apache server handles the redirect from the domain name to the Tornado
 server which runs on port 8881. See `/etc/httpd/conf/httpd.conf`.
 
-The log file written by the Tornado server currently goes to
-the install directory.
+The log file written by the Tornado server is specified as the first command line argument.
 
 
 ## Production server ##
