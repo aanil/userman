@@ -97,7 +97,7 @@ class RequestHandler(tornado.web.RequestHandler):
 
     def get_all_services(self):
         return [self.get_service(r.key) for r in self.db.view('service/name')]
-                          
+
     def get_team(self, name):
         "Get the team document by its name."
         try:
@@ -124,7 +124,7 @@ class RequestHandler(tornado.web.RequestHandler):
     def get_admins(self):
         "Return all admin accounts as a list of documents."
         view = self.db.view('user/role', include_docs=True)
-        return [r.doc for r in view['admin']]
+        return [r.doc for r in view['admin'] if r.doc['status'] == 'active']
 
     def get_doc(self, id, doctype=None):
         "Return the document given by its id, optionally checking the doctype."
