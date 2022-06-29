@@ -175,6 +175,9 @@ def cmp_name(u, v):
     "Compare the two user documents by their 'name' values."
     return cmp(u['name'], v['name'])
 
+def cmp(a, b):
+    "Replacement for py2 cmp"
+    return (a > b) - (a < b)
 
 class BasePatch(object):
     """Run through all documents in the database and patch the relevant ones.
