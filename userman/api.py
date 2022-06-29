@@ -65,13 +65,13 @@ class ApiAuth(ApiRequestHandler):
         user = self.get_user(email, require_active=True)
         try:
             data = json.loads(self.request.body)
-        except Exception, msg:
+        except Exception as msg:
             logging.debug(str(msg))
             raise tornado.web.HTTPError(400, reason=str(msg))
         self.check_password(user, data)
         try:
             service = data['service']
-        except KeyError, msg:
+        except KeyError as msg:
             raise tornado.web.HTTPError(400, reason='no service specified')
         if service not in user['services']:
             raise tornado.web.HTTPError(401, reason='service not enabled')
@@ -85,7 +85,7 @@ class ApiAuth(ApiRequestHandler):
     def check_password(self, user, data):
         try:
             password = data['password']
-        except KeyError, msg:
+        except KeyError as msg:
             raise tornado.web.HTTPError(400, reason='password missing')
         if utils.hashed_password(password) != user['password']:
             raise tornado.web.HTTPError(401, reason='invalid password')

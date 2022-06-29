@@ -20,5 +20,5 @@ if __name__ == '__main__':
         sys.exit('give account email of username')
     try:
         change_password(utils.get_db(), sys.argv[1])
-    except ValueError, msg:
+    except ValueError as msg:
         sys.exit(str(msg))

@@ -1,7 +1,7 @@
 " Userman: RequestHandler subclass."
 
 import logging
-import urllib
+import urllib.parse
 import weakref
 import smtplib
 from email.mime.text import MIMEText
@@ -40,7 +40,7 @@ class RequestHandler(tornado.web.RequestHandler):
             path = self.reverse_url(name, *args)
         url = settings['BASE_URL'].rstrip('/') + path
         if kwargs:
-            url += '?' + urllib.urlencode(kwargs)
+            url += '?' + urllib.parse.urlencode(kwargs)
         return url
 
     def get_current_user(self):
@@ -70,7 +70,7 @@ class RequestHandler(tornado.web.RequestHandler):
         except KeyError:
             try:
                 doc = utils.get_user_doc(self.db, name)
-            except ValueError, msg:
+            except ValueError as msg:
                 raise tornado.web.HTTPError(404, reason=str(msg))
             self._cache[doc.id] = doc
             key = "{0}:{1}".format(constants.USER, doc['email'])

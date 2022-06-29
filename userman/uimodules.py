@@ -11,7 +11,7 @@ class Icon(tornado.web.UIModule):
     template = """<img src="{url}" class="icon" alt="{alt}" title="{title}">"""
 
     def render(self, name, title=None, label=False):
-        if not isinstance(name, basestring):
+        if not isinstance(name, str):
             name = name[constants.DB_DOCTYPE]
         Name = name.capitalize()
         value = self.template.format(url=self.handler.static_url(name + '.png'),
@@ -93,7 +93,7 @@ class Submit(tornado.web.UIModule):
 
 class Access(Icon):
     "HTML for access flag: 'public' or 'private'."
-    
+
     def render(self, item, label=False):
         name = item.get('public') and 'public' or 'private'
         return super(Access, self).render(name, label=label)
