@@ -50,7 +50,7 @@ class RequestHandler(tornado.web.RequestHandler):
                 self.set_secure_cookie(constants.USER_COOKIE_NAME, '')
                 return None
         except AttributeError:
-            email = self.get_secure_cookie(constants.USER_COOKIE_NAME)
+            email = self.get_secure_cookie(constants.USER_COOKIE_NAME).decode('utf-8')
             if not email: return None
             try:
                 user = self.get_user(email)
