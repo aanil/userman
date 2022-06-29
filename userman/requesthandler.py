@@ -5,6 +5,7 @@ import urllib.parse
 import weakref
 import smtplib
 from email.mime.text import MIMEText
+import functools
 
 import tornado.web
 import couchdb
@@ -50,9 +51,10 @@ class RequestHandler(tornado.web.RequestHandler):
                 self.set_secure_cookie(constants.USER_COOKIE_NAME, '')
                 return None
         except AttributeError:
-            email = self.get_secure_cookie(constants.USER_COOKIE_NAME).decode('utf-8')
+            email = self.get_secure_cookie(constants.USER_COOKIE_NAME)
             if not email: return None
             try:
+                email = email.decode('utf-8')
                 user = self.get_user(email)
                 if user.get('status') != constants.ACTIVE:
                     raise tornado.web.HTTPError(400)
@@ -146,7 +148,7 @@ class RequestHandler(tornado.web.RequestHandler):
         "Return the log documents for the given doc id."
         view = self.db.view('log/doc', include_docs=True)
         return sorted([r.doc for r in view[id]],
-                      cmp=utils.cmp_modified,
+                      key=functools.cmp_to_key(utils.cmp_modified),
                       reverse=True)
 
     def send_email(self, recipient, sender, subject, text):
