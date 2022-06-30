@@ -143,8 +143,8 @@ def check_password_quality(password):
 
 def hashed_password(password):
     "Hash the password."
-    m = hashlib.sha384(settings['HASH_SALT'])
-    m.update(password)
+    m = hashlib.sha384(settings['HASH_SALT'].encode('utf-8'))
+    m.update(password.encode('utf-8'))
     return m.hexdigest()
 
 def log(db, doc, changed={}, deleted={}, current_user=None):
