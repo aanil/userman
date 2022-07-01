@@ -292,7 +292,7 @@ class UserActivate(RequestHandler):
                 saver['status'] = constants.ACTIVE
             self.set_secure_cookie(constants.USER_COOKIE_NAME, email)
             self.redirect(self.reverse_url('user', email))
-        except ValueError, msg:
+        except ValueError as msg:
             self.render('user_activate.html',
                         error=str(msg),
                         email=email,
@@ -331,7 +331,7 @@ class UserReset(RequestHandler):
                             self.get_admins()[0], # Arbitrarily the first admin
                             'Userman account password reset',
                             text)
-        except (tornado.web.HTTPError, ValueError), msg:
+        except (tornado.web.HTTPError, ValueError) as msg:
             logging.debug("account reset error: %s", msg)
         self.redirect(self.reverse_url('home'))
 

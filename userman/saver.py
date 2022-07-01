@@ -50,9 +50,9 @@ class BaseSaver(object):
         else:
             try:
                 checker(value)
-            except ValueError, msg:
+            except ValueError as msg:
                 raise tornado.web.HTTPError(400, str(msg))
-            except KeyError, msg:
+            except KeyError as msg:
                 raise tornado.web.HTTPError(409, str(msg))
         try:
             converter = getattr(self, "convert_{0}".format(key))

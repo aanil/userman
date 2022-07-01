@@ -1,6 +1,7 @@
 " Userman: Team handlers. "
 
 import tornado.web
+import functools
 
 from . import constants
 from . import settings
@@ -30,12 +31,12 @@ class TeamMixin(object):
 
     def get_leaders(self, team):
         return sorted([self.get_user(e) for e in team['leaders']],
-                      cmp=utils.cmp_email)
+                      key=functools.cmp_to_key(utils.cmp_email))
 
     def get_members(self, team):
         return sorted([self.get_user(r.value)
                        for r in self.db.view('user/team')[team['name']]],
-                      cmp=utils.cmp_email)
+                      key=functools.cmp_to_key(utils.cmp_email))
 
     def is_member(self, team, user=None):
         if user is None:

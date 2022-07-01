@@ -2,32 +2,32 @@
 
 import pprint
 import json
-import urllib
+import urllib.parse
 import requests
 
 from userman import settings
 
-email = urllib.quote('per.kraulis@gmail.com')
+email = urllib.parse.quote('per.kraulis@gmail.com')
 
 url = settings['BASE_URL'] + 'api/v1/user/' + email
-print url
+print(url)
 data = dict(service='Charon')
 headers = {'X-Userman-API-key': settings['API_KEYS'][0]}
 response = requests.post(url, data=json.dumps(data), headers=headers)
-print response.status_code
+print(response.status_code)
 if response.status_code == requests.codes.ok:
     pprint.pprint(response.json())
 else:
-    print response.reason
+    print(response.reason)
 
 url = settings['BASE_URL'] + 'api/v1/auth/' + email
-print url
+print(url)
 data = dict(password='abc123',
             service='Charon')
 headers = {'X-Userman-API-key': settings['API_KEYS'][0]}
 response = requests.post(url, data=json.dumps(data), headers=headers)
-print response.status_code
+print(response.status_code)
 if response.status_code == requests.codes.ok:
     pprint.pprint(response.json())
 else:
-    print response.reason
+    print(response.reason)

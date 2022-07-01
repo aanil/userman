@@ -3,7 +3,7 @@
 import os
 import socket
 import logging
-import urlparse
+import urllib.parse
 import uuid
 import hashlib
 import datetime
@@ -78,7 +78,7 @@ def load_settings(filepath=None):
     # Settings computable from others
     settings['DB_SERVER_VERSION'] = couchdb.Server(settings['DB_SERVER']).version()
     if 'PORT' not in settings:
-        parts = urlparse.urlparse(settings['BASE_URL'])
+        parts = urllib.parse.urlparse(settings['BASE_URL'])
         items = parts.netloc.split(':')
         if len(items) == 2:
             settings['PORT'] = int(items[1])
@@ -126,8 +126,8 @@ def timestamp(days=None):
 
 def to_ascii(value):
     "Convert any non-ASCII character to its closest equivalent."
-    if not isinstance(value, unicode):
-        value = unicode(value, 'utf-8')
+    if not isinstance(value, str):
+        value = str(value, 'utf-8')
     return unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
 
 def to_bool(value):
@@ -143,8 +143,8 @@ def check_password_quality(password):
 
 def hashed_password(password):
     "Hash the password."
-    m = hashlib.sha384(settings['HASH_SALT'])
-    m.update(password)
+    m = hashlib.sha384(settings['HASH_SALT'].encode('utf-8'))
+    m.update(password.encode('utf-8'))
     return m.hexdigest()
 
 def log(db, doc, changed={}, deleted={}, current_user=None):
@@ -175,6 +175,9 @@ def cmp_name(u, v):
     "Compare the two user documents by their 'name' values."
     return cmp(u['name'], v['name'])
 
+def cmp(a, b):
+    "Replacement for py2 cmp"
+    return (a > b) - (a < b)
 
 class BasePatch(object):
     """Run through all documents in the database and patch the relevant ones.

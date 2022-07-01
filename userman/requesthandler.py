@@ -1,10 +1,11 @@
 " Userman: RequestHandler subclass."
 
 import logging
-import urllib
+import urllib.parse
 import weakref
 import smtplib
 from email.mime.text import MIMEText
+import functools
 
 import tornado.web
 import couchdb
@@ -40,7 +41,7 @@ class RequestHandler(tornado.web.RequestHandler):
             path = self.reverse_url(name, *args)
         url = settings['BASE_URL'].rstrip('/') + path
         if kwargs:
-            url += '?' + urllib.urlencode(kwargs)
+            url += '?' + urllib.parse.urlencode(kwargs)
         return url
 
     def get_current_user(self):
@@ -53,6 +54,7 @@ class RequestHandler(tornado.web.RequestHandler):
             email = self.get_secure_cookie(constants.USER_COOKIE_NAME)
             if not email: return None
             try:
+                email = email.decode('utf-8')
                 user = self.get_user(email)
                 if user.get('status') != constants.ACTIVE:
                     raise tornado.web.HTTPError(400)
@@ -70,7 +72,7 @@ class RequestHandler(tornado.web.RequestHandler):
         except KeyError:
             try:
                 doc = utils.get_user_doc(self.db, name)
-            except ValueError, msg:
+            except ValueError as msg:
                 raise tornado.web.HTTPError(404, reason=str(msg))
             self._cache[doc.id] = doc
             key = "{0}:{1}".format(constants.USER, doc['email'])
@@ -146,7 +148,7 @@ class RequestHandler(tornado.web.RequestHandler):
         "Return the log documents for the given doc id."
         view = self.db.view('log/doc', include_docs=True)
         return sorted([r.doc for r in view[id]],
-                      cmp=utils.cmp_modified,
+                      key=functools.cmp_to_key(utils.cmp_modified),
                       reverse=True)
 
     def send_email(self, recipient, sender, subject, text):
