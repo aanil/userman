@@ -74,7 +74,7 @@ class RequestHandler(tornado.web.RequestHandler):
                 doc = utils.get_user_doc(self.db, name)
             except ValueError as msg:
                 raise tornado.web.HTTPError(404, reason=str(msg))
-            self._cache[doc['id']] = doc
+            self._cache[doc['_id']] = doc
             key = "{0}:{1}".format(constants.USER, doc['email'])
             self._cache[key] = doc
             if doc.get('username'):
@@ -93,7 +93,7 @@ class RequestHandler(tornado.web.RequestHandler):
             result = list(self.db.view('service/name', include_docs=True, key=name))
             if len(result) == 1:
                 doc = result[0]['doc']
-                self._cache[key] = self._cache[doc['id']] = doc
+                self._cache[key] = self._cache[doc['_id']] = doc
                 return doc
             raise tornado.web.HTTPError(404, reason='no such service')
 
