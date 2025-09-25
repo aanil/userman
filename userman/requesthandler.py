@@ -2,7 +2,6 @@
 
 import logging
 import urllib.parse
-import weakref
 import smtplib
 from email.mime.text import MIMEText
 import functools
@@ -21,7 +20,10 @@ class RequestHandler(tornado.web.RequestHandler):
 
     def prepare(self):
         self.db = utils.get_db()
-        self._cache = weakref.WeakValueDictionary()
+        self._cache = {}
+
+    def on_finish(self):
+        self._cache.clear()
 
     def get_template_namespace(self):
         result = super(RequestHandler, self).get_template_namespace()
@@ -109,7 +111,7 @@ class RequestHandler(tornado.web.RequestHandler):
             result = list(self.db.view('team/name', include_docs=True, key=name))
             if len(result) == 1:
                 doc = result[0]['doc']
-                self._cache[key] = self._cache[doc["id"]] = doc
+                self._cache[key] = self._cache[doc["_id"]] = doc
                 return doc
             raise tornado.web.HTTPError(404, reason='no such team')
 
